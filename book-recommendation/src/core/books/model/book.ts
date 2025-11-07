@@ -7,6 +7,7 @@ import {
     AllowNull,
     ForeignKey,
     BelongsTo,
+    PrimaryKey,
   } from "sequelize-typescript"
 
 import { User } from "@/core/users/model/user"
@@ -17,6 +18,7 @@ import { User } from "@/core/users/model/user"
     comment: "Catálogo de libros con información completa",
   })
   export class Book extends Model<Book>  {
+    @PrimaryKey
     @Default(DataType.UUIDV4)
     @Column(DataType.UUID)
     
