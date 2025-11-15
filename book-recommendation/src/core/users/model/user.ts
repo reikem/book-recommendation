@@ -1,6 +1,9 @@
 import { Book } from "@/core/books/model/book";
+import bcrypt from "bcryptjs";
 import {
-    Table, Column, Model, DataType, PrimaryKey, Default, AllowNull, Unique, HasMany
+    Table, Column, Model, DataType, PrimaryKey, Default, AllowNull, Unique, HasMany,
+    BeforeCreate,
+    BeforeUpdate
   } from "sequelize-typescript";
 
   
@@ -25,7 +28,7 @@ import {
   
     @AllowNull(false)
     @Column(DataType.STRING)
-    passwordHash!: string;
+    password_hash!: string;
   
     @Column(DataType.TEXT)
     avatar?: string;
@@ -51,5 +54,18 @@ import {
   
     @HasMany(() => Book)
     books!: Book[];
+
+    @BeforeCreate
+    @BeforeUpdate
+    static async hashPassword(instance: User) {
+      if (instance.changed("password_hash")) {
+        instance.password_hash = await bcrypt.hash(instance.password_hash, 10)
+      }
+    }
+
+    async validatePassword(password: string): Promise<boolean> {
+      return bcrypt.compare(password, this.password_hash)
+    }
+
   }
   
