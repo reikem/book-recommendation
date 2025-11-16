@@ -3,7 +3,7 @@ import { signToken } from "@/lib/auth";
 import bcrypt from "bcryptjs"
 import { NextRequest, NextResponse } from "next/server";
 
-export async function Login (req:NextRequest){
+export async function POST (req:NextRequest){
     try {
         const {email,password_hash}=await req.json();
 
