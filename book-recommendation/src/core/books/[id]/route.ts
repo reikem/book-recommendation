@@ -62,7 +62,8 @@ export async function PUT(
     }
 
     const body: Partial<IBook> = await req.json()
-    await book.update(body as any)
+    await book.update(body 
+    )
 
     const updated = book.get() as unknown as IBook
 

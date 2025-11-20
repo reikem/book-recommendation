@@ -1,4 +1,5 @@
 export interface IBook{
+    update(body: Partial<IBook>): unknown;
     id:string;
     title:string;
     author:string;
