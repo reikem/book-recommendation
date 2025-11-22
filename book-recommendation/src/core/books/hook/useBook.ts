@@ -1,25 +1,37 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { api } from "@/lib/apiClient"
+import { IBook } from "../type"
 
-export const API_URL = "/api/books"
-
-export const fetcher = async (url: string) => {
-    const res = await fetch(url, { credentials: "include" })
-    if (!res.ok) throw new Error("Error en la petición")
-    return res.json()
-}
-
-//all books
 export function useAllBooks() {
-    return useQuery({
-        queryKey: ['books'],
-        queryFn: () => fetcher(API_URL).then((res) => res.books)
-    })
+  return useQuery<IBook[]>({
+    queryKey: ["books"],
+    queryFn: async () => {
+      const res = await api.get("/books")
+      return res.data
+    }
+  })
 }
 
-//single book
-export function useBook(id: string) {
-    return useQuery({
-        queryKey: ['book', id],
-        queryFn: () => fetcher(`${API_URL}/${id}`).then((res) => res.book)
-    })
+export function useCreateBook() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (payload: Partial<IBook>) => { const res = await api.post("/books", payload); return res.data },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["books"] })
+  })
+}
+
+export function useUpdateBook() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, ...data }: any) => { const res = await api.put(`/books/${id}`, data); return res.data },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["books"] })
+  })
+}
+
+export function useDeleteBook() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => { const res = await api.delete(`/books/${id}`); return res.data },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["books"] })
+  })
 }

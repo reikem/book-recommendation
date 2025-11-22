@@ -1,33 +1,21 @@
+import { NextRequest, NextResponse } from "next/server"
 import jwt from "jsonwebtoken"
-import { NextRequest, NextResponse } from "next/server";
-const JWT_SECRET=process.env.JWT_SECRET||"your_jwt_secret_key";
-const EXPIRATION_IN="24h"
 
-export interface JWTPayload{
-    userId:string;
-    email:string
+const SECRET = process.env.JWT_SECRET || "secret_dev"
+
+export function issueToken(payload: object) {
+  return jwt.sign(payload, SECRET, { expiresIn: "1d" })
 }
-
-export function signToken(payload:JWTPayload){
-    return jwt.sign(payload,JWT_SECRET,{expiresIn:EXPIRATION_IN});
-}
-
 
 export function verifyToken(req: NextRequest) {
-    try {
-      const auth = req.headers.get("authorization")
-      if (!auth) {
-        return { error: true, response: NextResponse.json({ error: "Token no enviado" }, { status: 401 }) }
-      }
-  
-      const token = auth.split(" ")[1]
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!)
-  
-      return { error: false, decoded }
-    } catch (error) {
-      return {
-        error: true,
-        response: NextResponse.json({ error: "Token inválido"+error }, { status: 401 })
-      }
+  try {
+    const cookie = req.cookies.get("token")?.value
+    if (!cookie) {
+      return { error: true, response: NextResponse.json({ error: "No token" }, { status: 401 }) }
     }
+    const decoded = jwt.verify(cookie, SECRET)
+    return { error: false, decoded }
+  } catch (err: unknown) {
+    return { error: true, response: NextResponse.json({ error: "Invalid token" }, { status: 401 }) }
   }
+}

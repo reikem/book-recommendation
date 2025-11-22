@@ -1,39 +1,58 @@
-import { User } from "@/core/users/model/user";
-import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "@/lib/db"
 
-@Table({
-    tableName:"custom_themes",
-    comment:"Temas personalizados creados por los usuarios",
-})
-export class CustomTheme extends Model<CustomTheme> {
-    @PrimaryKey
-    @Default(DataType.UUIDV4)
-    @Column(DataType.UUID)
-    id!:string;
+export interface CustomThemeAttributes {
+    id?: string;
+    user_id: string;
+    name: string;
+    colors: Record<string, string>;
+    is_active?: boolean;
+    created_at?: Date;
+}
 
-    @ForeignKey(() => User)
-    @AllowNull(false)
-    @Column(DataType.UUID)
-    user_id!:string;
-
-    @AllowNull(false)
-    @Column(DataType.STRING)
-    name!:string;
-
-    @AllowNull(false)
-    @Column(DataType.JSONB)
-    colors!:Record<string, string>;
-
-    @Default(false)
-    @Column(DataType.BOOLEAN)
-    is_active!:boolean;
-
-    @Default(DataType.NOW)
-    @Column(DataType.DATE)
-    created_at!:Date;
-
-    @BelongsTo(()=>User)
-    user!:User;
-
+export class CustomTheme extends Model<CustomThemeAttributes> implements CustomThemeAttributes {
+    declare id?: string;
+    declare user_id: string;
+    declare name: string;
+    declare colors: Record<string, string>;
+    declare is_active?: boolean;
+    declare created_at?: Date;
 
 }
+
+CustomTheme.init(
+    {
+        id: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true
+        },
+        user_id: {
+            type: DataTypes.UUID,
+            allowNull: false
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        colors: {
+            type: DataTypes.JSONB,
+            allowNull: false
+        },
+        is_active: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        created_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        }
+    },
+    {
+        sequelize,
+        tableName: "custom_themes",
+        timestamps: false
+    }
+)
+
+

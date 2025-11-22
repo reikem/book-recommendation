@@ -1,105 +1,66 @@
-import {
-    Table,
-    Column,
-    Model,
-    DataType,
-    Default,
-    AllowNull,
-    ForeignKey,
-    BelongsTo,
-    PrimaryKey,
-  } from "sequelize-typescript"
+// src/core/books/model/book.ts
+import { DataTypes, Model } from "sequelize"
+import { sequelize } from "@/lib/db"
 
-import { User } from "@/core/users/model/user"
-  
-  @Table({
+export interface BookAttributes {
+  id?: string
+  title: string
+  author: string
+  genre: string[]
+  rating?: number
+  description?: string
+  cover?: string
+  pages?: string
+  year?: string
+  language?: string
+  isbn?: string
+  uploaded_by?: string
+  is_blocked?: boolean
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export class Book extends Model<BookAttributes> implements BookAttributes {
+  declare id?: string
+  declare title: string
+  declare author: string
+  declare genre: string[]
+  declare rating?: number
+  declare description?: string
+  declare cover?: string
+  declare pages?: string
+  declare year?: string
+  declare language?: string
+  declare isbn?: string
+  declare uploaded_by?: string
+  declare is_blocked?: boolean
+  declare createdAt?: Date
+  declare updatedAt?: Date
+}
+
+Book.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
+    title: { type: DataTypes.STRING, allowNull: false },
+    author: { type: DataTypes.STRING, allowNull: false },
+    genre: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: false, defaultValue: [] },
+    rating: { type: DataTypes.DECIMAL(3,1), defaultValue: 0.0 },
+    description: DataTypes.TEXT,
+    cover: DataTypes.TEXT,
+    pages: DataTypes.STRING,
+    year: DataTypes.STRING,
+    language: DataTypes.STRING,
+    isbn: DataTypes.STRING,
+    uploaded_by: DataTypes.UUID,
+    is_blocked: { type: DataTypes.BOOLEAN, defaultValue: false }
+  },
+  {
+    sequelize,
     tableName: "books",
-    timestamps: false,
-    comment: "Catálogo de libros con información completa",
-  })
-  export class Book extends Model<Book>  {
-    @PrimaryKey
-    @Default(DataType.UUIDV4)
-    @Column(DataType.UUID)
-    
-    id!: string
-  
-    @AllowNull(false)
-    @Column(DataType.STRING)
-    title!: string
-  
-    @AllowNull(false)
-    @Column(DataType.STRING)
-    author!: string
-  
-    @AllowNull(false)
-      @Column(DataType.ARRAY(DataType.STRING))
-      genre!: string[]
-  
-    @Default(0.0)
-    @Column(DataType.DECIMAL(3, 1))
-    rating!: number
-  
-    @Column(DataType.TEXT)
-    description?: string
-  
-    @Column(DataType.TEXT)
-    cover!: string
-  
-    @AllowNull(false)
-    @Column(DataType.INTEGER)
-    pages!: number
-  
-    @AllowNull(false)
-    @Column(DataType.INTEGER)
-    year!: number
-  
-    @Column(DataType.STRING)
-    language?: string
-  
-    @Column(DataType.STRING)
-    isbn?: string
-  
-    @Column(DataType.STRING)
-    publisher?: string
-  
-    @Column(DataType.TEXT)
-    content?: string
-  
-    @Column(DataType.TEXT)
-    file_path?: string
-  
-    @Column(DataType.BIGINT)
-    file_size?: number
-  
-    @Column(DataType.STRING)
-    file_type?: string
-  
-    @ForeignKey(() => User)
-    @AllowNull(false)
-    @Column(DataType.UUID)
-    uploaded_by!: string
-  
-    @BelongsTo(() => User)
-    uploader!: User
-  
-    @Default(false)
-    @Column(DataType.BOOLEAN)
-    is_blocked!: boolean
-  
-    @Column(DataType.TEXT)
-    block_reason?: string
-  
-    @Column(DataType.DATE)
-    blocked_at?: Date
-  
-    @Column(DataType.UUID)
-    blocked_by?: string
-  
-    @Column(DataType.DATE)
-    created_at?: Date
-  
-    @Column(DataType.DATE)
-    updated_at?: Date
+    timestamps: true
   }
-  
+)

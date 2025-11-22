@@ -1,3 +1,4 @@
+import { QueryProvider } from "@/providers/queryProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Mi Biblioteca Digital",
   description: "Gestiona tu colección de libros y recibe recomendaciones personalizadas.",
-  generator:"Next.js",
+  generator: "Next.js",
 };
 
 export default function RootLayout({
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
