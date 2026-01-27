@@ -54,5 +54,3 @@ CustomTheme.init(
         timestamps: false
     }
 )
-
-

@@ -13,12 +13,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-
-    // 👇 Solución al error de decoradores
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-
     "plugins": [
       {
         "name": "next"
